@@ -1,0 +1,13 @@
+billgates 936
+cnn 1080
+fallon 641
+nasa 1056
+trump 1009
+alex 590
+ellen 744
+bieber 489
+NPH 1030
+kardashian 648
+ronaldo 513
+obama 780
+taylorswift 612
