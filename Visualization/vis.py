@@ -1,15 +1,40 @@
 import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.patches as mpatches
 
 
-x = [1, 2, 3, 4, 5, 6, 7 ,8 ,9, 10, 11, 12 ,13]
-y = [936,1080,641,1056,1009,590,744,489,1030,648,513,780,612]
-labels = ['Bill Gates', 'CNN', 'Jimmy Fallon', 'NASA', 'Donald Trump', 'alex', 'Ellen Degeneres', 'Justin Bieber', 'Neil Patrick Harris', 'Kim Kardashian', 'Cristiano Ronaldo', 'Barack Obama', 'Taylor Swift']
+results = {}
+with open("results.txt", "r") as f:
+  for line in f:
+    res = line.split()
+    results[res[0]] = [res[1],res[2]]
+  f.close()
 
-plt.plot(x, y, 'ro')
-# You can specify a rotation for the tick labels in degrees or with keywords.
-plt.xticks(x, labels, rotation='vertical')
-# Pad margins so that markers don't get clipped by the axes
-plt.margins(0.2)
-# Tweak spacing to prevent clipping of tick-labels
-plt.subplots_adjust(bottom=0.15)
+colorWheel = ['r','b','g','c','m','y','black']
+categories = ['Musicians', 'Politicians', 'Athletes',
+'News Stations', 'Businesses', 'Education', 'Entertainers']
+patches = []
+for i,category in enumerate(categories):
+  patches.append(mpatches.Patch(color=colorWheel[i],label=category))
+
+x = []
+y = []
+labels = []
+colors = []
+
+with open("list.txt") as r:
+  i = 0
+  lines = r.read().splitlines()
+  for line in lines:
+    if len(line) == 0:
+      i = (i + 1)%7
+    else:
+      labels.append(line)
+      x.append(results[line][0])
+      y.append(results[line][1])
+      colors.append(colorWheel[i])
+
+plt.scatter(x, y, c=colors, label=categories)
+plt.legend(handles=patches,bbox_to_anchor=(1.1, 1.05),framealpha=1.0)
+
 plt.show()

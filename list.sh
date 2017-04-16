@@ -7,4 +7,3 @@ do
 	hadoop jar wordcount.jar wordCount ./../DataGathering/tweets/"$var"_tweets.csv results/"$var"
 	cd ..
 done <"$file"
-python ./Visualization/analyze.py
