@@ -15,59 +15,70 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 public class wordCount {
 
   static LinkedHashSet<String> dict = new LinkedHashSet();
+  final static IntWritable one = new IntWritable(1);
+  final static IntWritable zero = new IntWritable(0);
 
   public static class TokenizeMapper 
   extends Mapper<Object, Text, Text, IntWritable>{
 
-    private final static IntWritable one = new IntWritable(1);
-    private final static IntWritable two = new IntWritable(2);
+    final static IntWritable one = new IntWritable(1);
+    final static IntWritable zero = new IntWritable(0);
     private Text word = new Text();
   
     public void map(Object Key, Text value, Context context
     ) throws IOException, InterruptedException {
-      //Substring to skip the b character
-      StringTokenizer itr = new StringTokenizer(
-        value.toString().substring(2));
+      StringTokenizer itr = new StringTokenizer(value.toString());
       while(itr.hasMoreTokens()){
         word.set(itr.nextToken());
         String w = word.toString();
         if(!isLink(w)){
-          w = w.replaceAll("[^a-zA-Z ]", "").toLowerCase();
+          w = w.replaceAll("\\\\U[a-f0-9]{8}|[^a-zA-Z ]", "").toLowerCase();
           if(dict.contains(w)){
             context.write(new Text(w),one);
           } else {
             if(!w.equals("")){
-              context.write(new Text(w),two);
+              context.write(new Text(w),zero);
             }
           }
         }
       }
     }
 
-    //Checks if the file is a link.
+    //Checks if the word is a link or should be ignored.
     public static boolean isLink(String word){
-      return (word.charAt(0) == '#' || word.charAt(0) == '@'
-        || word.contains("http")
-        || word.charAt(0)=='&'|| word.contains("\\"));
+      return (word.contains("#") || word.contains("@")
+        || word.contains("http") || word.contains("&"));
     }
   }
 
   public static class SmallReducer 
   extends Reducer<Text, IntWritable, Text, IntWritable> {
+    private IntWritable result = new IntWritable();
+
     public void reduce(Text key, Iterable<IntWritable> values, Context context)
     throws IOException, InterruptedException {
-      context.write(key, values.iterator().next());
+      int sum = 0;
+      if(values.iterator().next() != zero){
+        for (IntWritable val: values){
+          sum += val.get();
+        }
+      }    
+      result.set(sum);
+      context.write(key, result);
     }
   }
 
   public static void main(String[] args) 
   throws IOException, InterruptedException, ClassNotFoundException {
     
+    //Accessing the built-in linux dictionary
     BufferedReader br = new BufferedReader
     (new FileReader(System.getProperty("user.dir")+"/words"));
     String str;
     while ((str = br.readLine()) != null) {
-      dict.add(str.toLowerCase());
+      //Removing all punctuation from dictionary, as will be the case with the twitter words.
+      String w = str.replaceAll("[^a-zA-Z ]", "").toLowerCase();
+      dict.add(w);
     }
     br.close();
 
