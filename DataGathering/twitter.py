@@ -1,5 +1,8 @@
+#!/usr/bin/python
 import tweepy
 import csv
+import argparse
+import os
 
 consumer_key = "SUAn5eS9GsAD3lLSDdyPp8Hc0"
 consumer_secret = "8U0ljImrgvZDMdYgI2RbZF1WXcDPsgb16YN1fmQIKSqwkafp0s"
@@ -12,9 +15,10 @@ auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
 
+dir_path = os.path.dirname(__file__)
 
 def twitterApi(screen_name):
-    maxTweets = 10000  # Some arbitrary large number
+    maxTweets = 1000  # Some arbitrary large number
     tweetsPerQry = 200  # this is the max the API permits
 
     tweets = []
@@ -42,12 +46,22 @@ def twitterApi(screen_name):
             print("some error : " + str(e))
             break
 
-    outtweets = [[tweet.text.encode("utf-8")] for tweet in tweets]
+    outtweets = [[tweet.text.encode('unicode_escape')] for tweet in tweets]
 
-    with open('%s_tweets.csv' % screen_name, 'w') as f:
+    rel_path = 'tweets/%s_tweets.csv' % screen_name
+    path = os.path.join(dir_path,rel_path)
+    with open(path, 'w') as f:
         writer = csv.writer(f)
         writer.writerows(outtweets)
         
     print("Downloaded {0} tweets".format(tweetCount))
 
     pass
+
+if __name__ == '__main__':
+    import argparse
+    ap = argparse.ArgumentParser(description='Process the twitter Name')
+    ap.add_argument('name', help='Name of Twitter user', nargs='?', default="nostring")
+    args = ap.parse_args()
+    if(args.name != "nostring"):
+        twitterApi(args.name)
