@@ -30,14 +30,20 @@ public class wordCount {
       StringTokenizer itr = new StringTokenizer(value.toString());
       while(itr.hasMoreTokens()){
         word.set(itr.nextToken());
-        String w = word.toString();
-        if(!isLink(w)){
-          w = w.replaceAll("\\\\U[a-f0-9]{8}|[^a-zA-Z ]", "").toLowerCase();
-          if(dict.contains(w)){
-            context.write(new Text(w),one);
-          } else {
-            if(!w.equals("")){
-              context.write(new Text(w),zero);
+        String x = word.toString();
+        if(!isLink(x)){
+          //Check for unicode characters or punctuation, if in middle of word, seperate into two.
+          x = x.replaceAll("\\\\U[a-f0-9]{8}|\\\\u[a-f0-9]{4}|\\\\n|\\\\t|[\\[\\](){},.;!?<>%]"," ");
+          String[] parts = x.split(" ");
+          //Remove Non-letters, as well as unicode characters
+          for (String w: parts){
+            w = w.replaceAll("[^a-zA-Z ]", "").toLowerCase();
+            if(dict.contains(w)){
+              context.write(new Text(w),one);
+            } else {
+              if(!w.equals("")){
+                context.write(new Text(w),zero);
+              }
             }
           }
         }
