@@ -1,13 +1,20 @@
-billgates 936
-cnn 1080
-fallon 641
-nasa 1056
-trump 1009
-alex 590
-ellen 744
-bieber 489
-NPH 1030
-kardashian 648
-ronaldo 513
-obama 780
-taylorswift 612
+realhughjackman 15795 2730 536
+carlyFiorina 25748 2770 339
+johnKasich 26604 3456 568
+tomcruise 22423 2748 971
+HillaryClinton 32002 3515 472
+ActuallyNPH 30576 4678 1065
+martinomalley 26304 3647 746
+LincolnChafee 26581 4244 788
+edsheeran 16067 2524 590
+senwarren 31110 3881 502
+JimWebbUSA 24438 3493 504
+hughlaurie 28313 5490 948
+realdonaldTrump 30649 3740 561
+BarackObama 27230 2811 222
+sensanders 37837 3584 390
+justinbieber 12813 1744 377
+jtimberlake 18705 2670 595
+arianagrande 12139 1723 419
+jebbush 28328 3557 468
+taylorswift13 20703 2908 661

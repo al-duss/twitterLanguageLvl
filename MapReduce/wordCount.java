@@ -1,5 +1,5 @@
 import java.io.*;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.StringTokenizer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -14,7 +14,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class wordCount {
 
-  static LinkedHashSet<String> dict = new LinkedHashSet();
+  static HashSet<String> dict = new HashSet();
   final static IntWritable one = new IntWritable(1);
   final static IntWritable zero = new IntWritable(0);
 
@@ -37,7 +37,7 @@ public class wordCount {
           String[] parts = x.split(" ");
           //Remove Non-letters, as well as unicode characters
           for (String w: parts){
-            w = w.replaceAll("[^a-zA-Z ]", "").toLowerCase();
+            w = w.replaceAll("[^a-zA-Z']", "").toLowerCase();
             if(dict.contains(w)){
               context.write(new Text(w),one);
             } else {
@@ -64,11 +64,9 @@ public class wordCount {
     public void reduce(Text key, Iterable<IntWritable> values, Context context)
     throws IOException, InterruptedException {
       int sum = 0;
-      if(values.iterator().next() != zero){
-        for (IntWritable val: values){
-          sum += val.get();
-        }
-      }    
+      for (IntWritable val: values){
+        sum += val.get();
+      }   
       result.set(sum);
       context.write(key, result);
     }
@@ -82,8 +80,7 @@ public class wordCount {
     (new FileReader(System.getProperty("user.dir")+"/words"));
     String str;
     while ((str = br.readLine()) != null) {
-      //Removing all punctuation from dictionary, as will be the case with the twitter words.
-      String w = str.replaceAll("[^a-zA-Z ]", "").toLowerCase();
+      String w = str.toLowerCase();
       dict.add(w);
     }
     br.close();

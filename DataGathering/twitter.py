@@ -18,7 +18,7 @@ api = tweepy.API(auth)
 dir_path = os.path.dirname(__file__)
 
 def twitterApi(screen_name):
-    maxTweets = 1000  # Some arbitrary large number
+    maxTweets = 2000  # Some arbitrary large number
     tweetsPerQry = 200  # this is the max the API permits
 
     tweets = []
@@ -26,20 +26,22 @@ def twitterApi(screen_name):
     print("Search:" + screen_name)
     print("Downloading max {0} tweets".format(maxTweets))
 
-    new_tweets = api.user_timeline(screen_name = screen_name,count=200)
+    new_tweets = api.user_timeline(screen_name = screen_name,count=tweetsPerQry)
+    tweetCount += len(new_tweets)
     tweets.extend(new_tweets)
 
     oldest_tweet = tweets[-1].id -1
 
-    while (tweetCount < maxTweets and len(new_tweets) > 0):
+    while (tweetCount < maxTweets) and (len(new_tweets) > 0):
         try:
-            if (oldest_tweet <= 0):
-                new_tweets = api.user_timeline(screen_name = screen_name,count=200,max_id=oldest_tweet)
+            new_tweets = api.user_timeline(screen_name = screen_name,count=tweetsPerQry,max_id=oldest_tweet)
             tweets.extend(new_tweets)
 
             tweetCount += len(new_tweets)
+            if (maxTweets - tweetCount <= tweetsPerQry):
+                tweetsPerQry = maxTweets -tweetCount
             print("Downloaded {0} tweets".format(tweetCount))
-            oldest_tweet = new_tweets[-1].id
+            oldest_tweet = tweets[-1].id -1
 
         except tweepy.TweepError as e:
             #  Exit if any error
