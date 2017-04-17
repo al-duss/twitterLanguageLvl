@@ -8,7 +8,7 @@ def analyze():
           with open(os.path.join(root,file),'r') as f:
             count = countWords(f.readlines())
             f.close()
-            w.write(os.path.join(root,file).split('/')[4]+" "+str(count['total'])+" "+str(count['diff']) +" "+str(count['not']) +'\n')
+            w.write(os.path.join(root,file).split('/')[4]+" "+str(count['total'])+" "+str(count['diff']) +" "+str(count['not'])+" "+str(count['prop']) +'\n')
     w.close()
 
 def countWords(lines):
@@ -20,7 +20,7 @@ def countWords(lines):
       count['total'] += value
     else:
       count['not'] += 1
-
+  count['prop'] = float(count['total'])/float(count['diff'])    
   return count
 
 if __name__ == '__main__':
