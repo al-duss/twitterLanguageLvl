@@ -1,10 +1,13 @@
+#!/usr/bin/python
+
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.patches as mpatches
+import os
 
-
+dir_path = os.path.dirname(os.path.realpath(__file__))
 results = {}
-with open("results.txt", "r") as f:
+with open(dir_path+"/results.txt", "r") as f:
   for line in f:
     res = line.split()
     results[res[0]] = [res[1],res[2]]
@@ -22,7 +25,7 @@ y = []
 labels = []
 colors = []
 
-with open("list.txt") as r:
+with open(dir_path+"/../list.txt") as r:
   i = 0
   lines = r.read().splitlines()
   for line in lines:
@@ -35,6 +38,8 @@ with open("list.txt") as r:
       colors.append(colorWheel[i])
 
 plt.scatter(x, y, c=colors, label=categories)
-plt.legend(handles=patches,bbox_to_anchor=(1.1, 1.05),framealpha=1.0)
-
+plt.legend(handles=patches,bbox_to_anchor=(1.1, 1.02),framealpha=1.0)
+plt.xlabel('Total word count')
+plt.ylabel('Different words used')
+plt.title("Vocabulary level of Twitter users over 2000 tweets")
 plt.show()
