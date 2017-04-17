@@ -39,7 +39,9 @@ def plot(catNo):
     plt.annotate(
       label,
       xy=(a,b),va='bottom')
-
+  plt.xlabel('Total word count')
+  plt.ylabel('Different words used')
+  plt.title("Vocabulary level of Twitter Users over 2000 tweets")
   plt.show()
 
 if __name__ == '__main__':
