@@ -20,12 +20,7 @@ categories = ['Musicians', 'Politicians', 'Athletes',
 patches = []
 for i,category in enumerate(categories):
   patches.append(mpatches.Patch(color=colorWheel[i],label=category))
-
-# x = sorted(results,key=lambda x: x[1])
 x = []
-labels = []
-colors = []
-
 
 with open(dir_path+"/../list.txt") as r:
   i = 0
@@ -34,14 +29,18 @@ with open(dir_path+"/../list.txt") as r:
     if len(line) == 0:
       i = (i + 1)%7
     else:
-      labels.append(line)
-      x.append(results[line])
-      colors.append(colorWheel[i])
+      x.append((line, results[line], colorWheel[i]))
+
+x = sorted(x, key=lambda z: float(z[1]))
+
+print x
+colors = [i[2] for i in x]
+labels = [i[0] for i in x]
 
 fig, ax = plt.subplots()
-ax.bar(range(0,len(results)),x,color=colors)
-ax.set_xticks(range(0,len(labels)))
-ax.set_xticklabels(results, rotation='vertical')
+ax.bar(range(0,len(x)),[i[1] for i in x],color=colors)
+ax.set_xticks(range(0,len(x)))
+ax.set_xticklabels(labels, rotation='vertical')
 ax.legend(handles=patches,framealpha=1.0)
-plt.title("Word count per different word")
+plt.title("Proportion of Unique Words Used per Word")
 plt.show()

@@ -20,7 +20,7 @@ def countWords(lines):
       count['total'] += value
     else:
       count['not'] += 1
-  count['prop'] = float(count['total'])/float(count['diff'])    
+  count['prop'] = float(count['diff'])/float(count['total'])    
   return count
 
 if __name__ == '__main__':
